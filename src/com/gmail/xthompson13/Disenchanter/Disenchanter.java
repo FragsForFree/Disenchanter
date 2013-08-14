@@ -103,11 +103,14 @@ public class Disenchanter extends JavaPlugin{
 									// We'll try creating a new item stack with the same meta data, but with a quantity of one.
 									
 									if (checkval >= 1){
+										// Populate information to remove the emerald. For some reason, a new item stack is needed.
 										ItemMeta emerMeta = emeraldCheck.getItemMeta();
 										ItemStack removeEmerald = new ItemStack(Material.EMERALD);
 										removeEmerald.setItemMeta(emerMeta);
 										removeEmerald.setAmount(1);
 										p.getInventory().removeItem(removeEmerald);
+										// Remove the existing blank book from the player's inventory
+										p.getInventory().removeItem(new ItemStack(Material.BOOK, 1));			
 									} 
 									
 								}
@@ -121,8 +124,7 @@ public class Disenchanter extends JavaPlugin{
 													// Initialise the book to be given to the player
 													ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
 							
-													// Remove the existing blank book from the player's inventory
-													p.getInventory().removeItem(new ItemStack(Material.BOOK, 1));									
+																			
 													
 													// Retrieve a set of the enchantments and values, and convert it to a split string
 													Set<Enchantment> keySet = item.getEnchantments().keySet();
