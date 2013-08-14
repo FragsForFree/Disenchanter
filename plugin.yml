@@ -1,0 +1,16 @@
+name: Disenchanter
+main: com.gmail.xthompson13.Disenchanter.Disenchanter
+version: 0.2.1
+
+commands:
+  disenchant:
+    description: Strip the enchantment from an item and bind it to a book.
+    usage: /disenchant
+    permission: disenchant.disenchant
+    permission-message: You don't have permission.
+  whatname:
+    description: Check the name of what is in your hand.
+    usage: /whatname
+    permission: disenchant.whatname
+    permission-message: You don't have permission.  
+  
