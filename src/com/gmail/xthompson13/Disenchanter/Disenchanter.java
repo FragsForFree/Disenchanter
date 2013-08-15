@@ -76,17 +76,7 @@ public class Disenchanter extends JavaPlugin{
 							//now we can make the item, because we'll need to check durability. we'll also pull the number of enchantments it has.
 							final ItemStack item = p.getItemInHand();
 							final int checkval = item.getEnchantments().size();
-							
-							//First confiscate the soul emerald...somehow
-							// We'll try creating a new item stack with the same meta data, but with a quantity of one.
-							if (checkval >= 1){
-								ItemMeta emerMeta = emeraldCheck.getItemMeta();
-								ItemStack removeEmerald = new ItemStack(Material.EMERALD);
-								removeEmerald.setItemMeta(emerMeta);
-								removeEmerald.setAmount(1);
-								p.getInventory().removeItem(removeEmerald);
-							} 
-							
+														
 							// Here we should check the durability of an item, and reject it if it's damaged.
 							ItemStack duraControl = new ItemStack(item.getTypeId());
 							int maxDura = duraControl.getDurability();
