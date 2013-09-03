@@ -29,6 +29,9 @@ public class Disenchanter extends JavaPlugin{
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		
+		
+	// Filter for console sending the command
+	if(sender instanceof Player){
 		// Listen for the command
 		if(cmd.getName().equalsIgnoreCase("disenchant")){
 		
@@ -197,6 +200,8 @@ public class Disenchanter extends JavaPlugin{
 			
 			return true;
 		}
-			return false;
+			
+	} else { sender.sendMessage("You cannot run this command from console.");}
+	return false;
 	}
 }
