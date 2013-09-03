@@ -1,6 +1,6 @@
 name: Disenchanter
 main: com.gmail.xthompson13.Disenchanter.Disenchanter
-version: 0.2.4
+version: 0.2.5
 
 commands:
   disenchant:
@@ -13,4 +13,8 @@ commands:
     usage: /whatname
     permission: disenchant.whatname
     permission-message: You don't have permission.  
-  
+  disenchanter:
+    description: Control settings for Disenchanter.
+    usage: /disenchanter set <config option> <value>
+    permission: disenchant.admin
+    permission-message: You don't have permission.
