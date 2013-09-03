@@ -36,7 +36,7 @@ public class Disenchanter extends JavaPlugin{
 	if(sender instanceof Player){
 		// Listen for the command
 		if(cmd.getName().equalsIgnoreCase("disenchanter")){
-			if(sender.hasPermission("disenchanter.admin")){
+			if(sender.hasPermission("disenchant.admin")){
 				if(args[0].equalsIgnoreCase("set")){
 					if(args.length == 3){
 						getConfig().set(args[1], args[2]);
