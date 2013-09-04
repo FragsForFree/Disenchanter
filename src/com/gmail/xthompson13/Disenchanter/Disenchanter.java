@@ -37,14 +37,21 @@ public class Disenchanter extends JavaPlugin{
 		// Listen for the command
 		if(cmd.getName().equalsIgnoreCase("disenchanter")){
 			if(sender.hasPermission("disenchant.admin")){
-				if(args[0].equalsIgnoreCase("set")){
-					if(args.length == 3){
-						getConfig().set(args[1], args[2]);
-						sender.sendMessage(ChatColor.GREEN+"[Disenchanter] Config option: "+ChatColor.GRAY+args[1]+ChatColor.GREEN+" set to: "+ChatColor.GRAY+args[2]);
-						saveConfig();
-						return true;
+				if(args.length > 0){
+					if(args[0].equalsIgnoreCase("set")){
+						if(args.length == 3){
+							getConfig().set(args[1], args[2]);
+							sender.sendMessage(ChatColor.GREEN+"[Disenchanter] Config option: "+ChatColor.GRAY+args[1]+ChatColor.GREEN+" set to: "+ChatColor.GRAY+args[2]);
+							saveConfig();
+							return true;
+						}
 					}
 				}
+				if(args.length == 0){
+					sender.sendMessage(ChatColor.RED+"[Disenchanter] Did you mean to use /disenchant ?");
+					return true;
+				}
+				
 			}
 		}
 		if(cmd.getName().equalsIgnoreCase("disenchant") && args.length == 0){

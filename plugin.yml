@@ -1,6 +1,6 @@
 name: Disenchanter
 main: com.gmail.xthompson13.Disenchanter.Disenchanter
-version: 0.2.5
+version: 0.2.6
 
 commands:
   disenchant:
