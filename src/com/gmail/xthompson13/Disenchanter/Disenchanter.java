@@ -22,6 +22,10 @@ public class Disenchanter extends JavaPlugin{
 	public void onEnable(){
 		getConfig().options().copyDefaults(true);
 		getConfig().addDefault("multi-mode", "false");
+		getConfig().addDefault("require-emerald", "true");
+		getConfig().addDefault("require-book", "true");
+		getConfig().addDefault("require-night-time", "true");
+		getConfig().addDefault("override-durability", "false");
 		saveConfig();
 	}
 	
@@ -67,35 +71,17 @@ public class Disenchanter extends JavaPlugin{
 					
 				// Check to see if it's night time
 				long time = getServer().getWorld(p.getWorld().getName()).getTime();
-				if(time > 13500 && time < 22500){
+				if((time > 13500 && time < 22500) || getConfig().getString("require-night-time").equalsIgnoreCase("false")){
 					
 					// Check to see if the player has the book in his/her inventory
-					if(p.getInventory().contains(340) == true){
+					if(p.getInventory().contains(340) == true || getConfig().getString("require-book").equalsIgnoreCase("false")){
+					
+						
 						// Check to see if the player is carrying an emerald
-						if(p.getInventory().contains(388) == true){
+						if(p.getInventory().contains(388) == true || getConfig().getString("require-emerald").equalsIgnoreCase("false")){
 							
-							// Now, get the emerald and check to see what it is named
-							int loc;
-							loc = p.getInventory().getHeldItemSlot();
-							loc++;
-							String emeraldName;
-							ItemStack emeraldCheck = p.getInventory().getItem(loc);
-							if(emeraldCheck == null){
-								emeraldName = "wrong";
-							} else{
-								if (p.getInventory().getItem(loc).getItemMeta().hasDisplayName() == true){
-								emeraldName = p.getInventory().getItem(loc).getItemMeta().getDisplayName();
-								} else {
-									emeraldName = "wrong";
-								}
-							}
-														
-							int comparison;
-							comparison = emeraldName.compareToIgnoreCase("Soul");
-							if(comparison == 0){
-							
-							
-							
+							if(emeraldCheck(p) == true){
+												
 							//now we can make the item, because we'll need to check durability. we'll also pull the number of enchantments it has.
 							final ItemStack item = p.getItemInHand();
 							final int checkval = item.getEnchantments().size();
@@ -105,36 +91,47 @@ public class Disenchanter extends JavaPlugin{
 							int maxDura = duraControl.getDurability();
 							int currentDura = item.getDurability();
 							int remainder = maxDura-currentDura;
-							if(remainder == 0){
+							if(remainder == 0 || getConfig().getString("override-durability").equalsIgnoreCase("true")){
 	
 								// Begin bukkit runnable for the delayed task.
 								if(checkval >= 1){
 									
 									if (checkval >= 1){
 										
-										if(!p.getInventory().containsAtLeast(new ItemStack(Material.BOOK), sacrificeToRemove(item))){
-											p.sendMessage(ChatColor.RED+"[Disenchanter] You don't have enough books.");
-											return true;
-										}
 										// Populate information to remove the emerald. For some reason, a new item stack is needed.
-										ItemMeta emerMeta = emeraldCheck.getItemMeta();
-										ItemStack removeEmerald = new ItemStack(Material.EMERALD);
-										removeEmerald.setItemMeta(emerMeta);
-										if(!p.getInventory().containsAtLeast(removeEmerald, sacrificeToRemove(item))){
-											p.sendMessage(ChatColor.RED+"[Disenchanter] You don't have enough Soul Emeralds.");
-											return true;
+										// Only do this if the config determines that the emerald is required.
+										if(getConfig().getString("require-emerald").equalsIgnoreCase("true")){
+											ItemStack emeraldCheck = p.getInventory().getItem(p.getInventory().getHeldItemSlot()+1);
+											ItemMeta emerMeta = emeraldCheck.getItemMeta();
+											ItemStack removeEmerald = new ItemStack(Material.EMERALD);
+											removeEmerald.setItemMeta(emerMeta);
+											// CHeck to see if the player has enough emeralds to complete the command
+											if(!p.getInventory().containsAtLeast(removeEmerald, sacrificeToRemove(item))){
+												p.sendMessage(ChatColor.RED+"[Disenchanter] You don't have enough Soul Emeralds.");
+												return true;
+											}
+											removeEmerald.setAmount(sacrificeToRemove(item));
+											p.getInventory().removeItem(removeEmerald);
 										}
+										
 										p.sendMessage(ChatColor.GREEN+"[Disenchanter] The ritual will begin...");
 										p.setItemInHand(new ItemStack(Material.AIR));
 
-										removeEmerald.setAmount(sacrificeToRemove(item));
-										p.getInventory().removeItem(removeEmerald);
+
 										
-										//book removal
-										int bookRemoveCount = 1;
-										while (bookRemoveCount <= sacrificeToRemove(item)){									
-											p.getInventory().removeItem(new ItemStack(Material.BOOK, 1));
-											bookRemoveCount++;
+										// Book removal if config says book is required
+										if(getConfig().getString("require-book").equalsIgnoreCase("true")){
+											
+											if(!p.getInventory().containsAtLeast(new ItemStack(Material.BOOK), sacrificeToRemove(item))){
+												p.sendMessage(ChatColor.RED+"[Disenchanter] You don't have enough books.");
+												return true;
+											}
+											
+											int bookRemoveCount = 1;
+											while (bookRemoveCount <= sacrificeToRemove(item)){									
+												p.getInventory().removeItem(new ItemStack(Material.BOOK, 1));
+												bookRemoveCount++;
+											}
 										}
 									} 
 									
@@ -289,5 +286,42 @@ public class Disenchanter extends JavaPlugin{
 			return enchString.length;
 		} else return 1;
 		
+	}
+	
+	public boolean emeraldCheck(Player p){
+		
+		//override logic first up
+		if(getConfig().getString("require-emerald").equalsIgnoreCase("false")){
+			return true;
+		}
+		//check to see if they even have an emerald
+		if(p.getInventory().contains(388) == true){
+			//check to see if it's named "Soul"
+			
+			//get the location index of the slot to the right of the held item
+			int loc;
+			loc = p.getInventory().getHeldItemSlot();
+			loc++;
+			
+			String emeraldName;
+			ItemStack emeraldCheck = p.getInventory().getItem(loc);
+			if(emeraldCheck == null){
+				emeraldName = "wrong";
+			} else{
+				
+				if (p.getInventory().getItem(loc).getItemMeta().hasDisplayName() == true){
+					emeraldName = p.getInventory().getItem(loc).getItemMeta().getDisplayName();
+				} else { emeraldName = "wrong"; }
+				
+					
+			}
+										
+			if(emeraldName.compareToIgnoreCase("Soul") == 0){
+				return true;
+			}
+			
+		}
+		
+		return false;
 	}
 }
