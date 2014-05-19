@@ -74,11 +74,11 @@ public class Disenchanter extends JavaPlugin{
 				if((time > 13500 && time < 22500) || getConfig().getString("require-night-time").equalsIgnoreCase("false")){
 					
 					// Check to see if the player has the book in his/her inventory
-					if(p.getInventory().contains(340) == true || getConfig().getString("require-book").equalsIgnoreCase("false")){
+					if(p.getInventory().contains(Material.BOOK) == true || getConfig().getString("require-book").equalsIgnoreCase("false")){
 					
 						
 						// Check to see if the player is carrying an emerald
-						if(p.getInventory().contains(388) == true || getConfig().getString("require-emerald").equalsIgnoreCase("false")){
+						if(p.getInventory().contains(Material.EMERALD) == true || getConfig().getString("require-emerald").equalsIgnoreCase("false")){
 							
 							if(emeraldCheck(p) == true){
 												
@@ -87,7 +87,7 @@ public class Disenchanter extends JavaPlugin{
 							final int checkval = item.getEnchantments().size();
 														
 							// Here we should check the durability of an item, and reject it if it's damaged.
-							ItemStack duraControl = new ItemStack(item.getTypeId());
+							ItemStack duraControl = new ItemStack(item.getType());
 							int maxDura = duraControl.getDurability();
 							int currentDura = item.getDurability();
 							int remainder = maxDura-currentDura;
@@ -295,7 +295,7 @@ public class Disenchanter extends JavaPlugin{
 			return true;
 		}
 		//check to see if they even have an emerald
-		if(p.getInventory().contains(388) == true){
+		if(p.getInventory().contains(Material.EMERALD) == true){
 			//check to see if it's named "Soul"
 			
 			//get the location index of the slot to the right of the held item
